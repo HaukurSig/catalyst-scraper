@@ -49,6 +49,7 @@ def main():
 
     tree = html.fromstring(result.content)
     todays_workout = get_todays_workout(tree)
+    todays_workout = [x.strip() for x in todays_workout]
     todays_workout_text = "\n".join(todays_workout)
     
     if args.slack:
@@ -77,12 +78,20 @@ def get_login_payload(username, password):
 
 
 def get_todays_workout(tree):
-    return tree.xpath("""//body/div[@id='pageWrapper']
+    main_workout = tree.xpath("""//body/div[@id='pageWrapper']
                                    /div[@id='contentWrapper']
                                    /div[@id='main_content_container']
                                    /div[@id='leftColumn']
                                    /div[@class='workouts_list_text']
                                    /ul/li/text()""")
+    accessories = tree.xpath("""//body/div[@id='pageWrapper']
+                                   /div[@id='contentWrapper']
+                                   /div[@id='main_content_container']
+                                   /div[@id='leftColumn']
+                                   /div[@class='workouts_list_text']
+                                   /ul/following-sibling::text()""")
+
+    return main_workout + ["------"] + accessories
 
 
 def get_todays_workout_url(tree):
