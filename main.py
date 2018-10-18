@@ -8,7 +8,7 @@ def main():
     parser = argparse.ArgumentParser(description='Get today\'s workout from Catalyst Athletics.')
     parser.add_argument('-u', dest='user', help='Username', required=True)
     parser.add_argument('-p', dest='password', help='Password', required=True)
-    parser.add_argument('-slack', dest='slack', help='Slack webhook URL')
+    parser.add_argument('-discord', dest='discord', help='Discord webhook URL')
 
     args = parser.parse_args()
 
@@ -51,14 +51,14 @@ def main():
     todays_workout = get_todays_workout(tree)
     todays_workout_text = "\n".join(todays_workout)
     
-    if args.slack:
-        post_to_slack_webhook(args.slack, todays_workout_text)
+    if args.discord:
+        post_to_discord_webhook(args.discord, todays_workout_text)
     else:
         for x in todays_workout:
             print(x.encode('ascii', 'ignore').decode('ascii'))
 
 
-def post_to_slack_webhook(webhook_url, message):
+def post_to_discord_webhook(webhook_url, message):
     data = {
         "content": message
     }
